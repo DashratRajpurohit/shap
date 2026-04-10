@@ -558,6 +558,9 @@ class TreeExplainer(Explainer):
                a logistic inverse-transform (e.g., ``scipy.special.expit``) must be applied 
                to the sum.
 
+               Furthermore, the additivity formula requires SHAP values and model
+               predictions to be computed on the same samples in the same order.
+
             The shape of the returned array depends on the number of model outputs:
 
             * one output: array of shape ``(#num_samples, *X.shape[1:])``.
