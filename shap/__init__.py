@@ -38,7 +38,6 @@ from .utils import approximate_interactions, sample  # noqa: E402
 # from . import benchmark
 from .utils._legacy import kmeans  # noqa: E402
 
-
 # plotting (only loaded if matplotlib is present)
 
 

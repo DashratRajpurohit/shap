@@ -1,21 +1,20 @@
 import numpy as np
-import pytest
-import sklearn
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
+
 import shap
 from shap.explainers import pytree
 
+
 def test_pytree_decision_tree_regressor():
-    """ Tests pytree against a simple DecisionTreeRegressor for additivity.
-    """
+    """Tests pytree against a simple DecisionTreeRegressor for additivity."""
     X, y = shap.datasets.california(n_points=100)
     model = DecisionTreeRegressor(max_depth=3, random_state=42)
     model.fit(X, y)
 
     # Use the pure python implementation
     explainer = pytree.TreeExplainer(model)
-    
+
     # Explain first 5 instances
     X_test = X.values[:5]
     shap_values = explainer.shap_values(X_test)
@@ -29,9 +28,9 @@ def test_pytree_decision_tree_regressor():
     for i in range(5):
         assert np.abs(np.sum(shap_values[i]) - preds[i]) < 1e-10
 
+
 def test_pytree_vs_main_tree_explainer():
-    """ Comparison test between pure python pytree and optimized TreeExplainer.
-    """
+    """Comparison test between pure python pytree and optimized TreeExplainer."""
     X, y = shap.datasets.california(n_points=50)
     model = RandomForestRegressor(n_estimators=2, max_depth=3, random_state=42)
     model.fit(X, y)
@@ -39,12 +38,16 @@ def test_pytree_vs_main_tree_explainer():
     # Standard optimized TreeExplainer
     explainer_std = shap.TreeExplainer(model)
     shap_values_std = explainer_std.shap_values(X.values[:5])
-    expected_value_std = explainer_std.expected_value[0] if isinstance(explainer_std.expected_value, np.ndarray) else explainer_std.expected_value
+    expected_value_std = (
+        explainer_std.expected_value[0]
+        if isinstance(explainer_std.expected_value, np.ndarray)
+        else explainer_std.expected_value
+    )
 
     # Pure python pytree
     explainer_py = pytree.TreeExplainer(model)
     shap_values_py_with_base = explainer_py.shap_values(X.values[:5])
-    
+
     # Split pytree's output into values and base
     shap_values_py = shap_values_py_with_base[:, :-1]
     expected_value_py = shap_values_py_with_base[0, -1]
@@ -57,6 +60,7 @@ def test_pytree_vs_main_tree_explainer():
     # pytree returns (instances, features + 1) or a list depending on outputs.
     # For RandomForestRegressor (1 output), both should align.
     np.testing.assert_array_almost_equal(shap_values_std, shap_values_py, decimal=10)
+
 
 if __name__ == "__main__":
     # If run directly, just run the tests

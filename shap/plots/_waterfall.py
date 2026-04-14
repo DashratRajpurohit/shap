@@ -15,7 +15,7 @@ from ._style import get_style
 # plot that is associated with that feature get overlaid on the plot...it would quickly allow users to answer
 # why a feature is pushing down or up. Perhaps the best way to do this would be with an ICE plot hanging off
 # of the bar...
-def waterfall(shap_values: Any, max_display: int = 10, show: bool = True) -> Optional[plt.Axes]:
+def waterfall(shap_values: Any, max_display: int = 10, show: bool = True) -> plt.Axes | None:
     """Plots an explanation of a single prediction as a waterfall plot.
 
     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
@@ -377,12 +377,12 @@ def waterfall(shap_values: Any, max_display: int = 10, show: bool = True) -> Opt
 
 def waterfall_legacy(
     expected_value: Any,
-    shap_values: Optional[np.ndarray] = None,
-    features: Optional[np.ndarray] = None,
-    feature_names: Optional[Union[List[str], np.ndarray]] = None,
+    shap_values: np.ndarray | None = None,
+    features: np.ndarray | None = None,
+    feature_names: list[str] | np.ndarray | None = None,
     max_display: int = 10,
-    show: bool = True
-) -> Optional[Union[plt.Figure, plt.Axes]]:
+    show: bool = True,
+) -> plt.Figure | plt.Axes | None:
     """Plots an explanation of a single prediction as a waterfall plot.
 
     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
