@@ -543,15 +543,14 @@ class TreeExplainer(Explainer):
         np.array
             Estimated SHAP values, usually of shape ``(# samples x # features)``.
 
-            For each output, the SHAP values (summed across all features) plus the
-            expected value equals the model's output in the space of the ``model_output``
-            argument for that sample:
+            For each output, the sum of the SHAP values plus the ``expected_value``
+            equals the model's output (in the specified output space):
 
-            * Single output: ``shap_values[i, :].sum() + expected_value = explainer_model_output[i]``
-            * Multiple outputs: ``shap_values[i, :, j].sum() + expected_value[j] = explainer_model_output[i, j]``
+            * Single output: ``shap_values[i, :].sum() + expected_value = f(x)[i]``
+            * Multiple outputs: ``shap_values[i, :, j].sum() + expected_value[j] = f(x)[i, j]``
 
             .. note::
-               The ``explainer_model_output`` is NOT necessarily what ``model.predict()``
+               The ``f(x)`` value is NOT necessarily what ``model.predict()``
                or ``model.predict_proba()`` returns. For example, for an XGBoost Classifier with the default
                ``model_output="raw"``, the explainer returns log-odds (margins).
                To compare this mathematically against ``predict_proba()`` probabilities,
