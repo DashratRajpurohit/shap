@@ -16,7 +16,7 @@ def embedding(ind, shap_values, feature_names=None, method="pca", alpha=1.0, sho
         If this is a string it is either the name of the feature, or it can have the
         form "rank(int)" to specify the feature with that rank (ordered by mean absolute
         SHAP value over all the samples), or "sum()" to mean the sum of all the SHAP values,
-        which is the model's output (minus it's expected value).
+        which is the model's output (minus its expected value).
 
     shap_values : numpy.array
         Matrix of SHAP values (# samples x # features).
