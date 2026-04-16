@@ -904,6 +904,16 @@ class TreeExplainer(Explainer):
                     f" was {sum_val[ind]:f}, while the model output was {model_output[ind]:f}. If this"
                     " difference is acceptable you can set check_additivity=False to disable this check."
                 )
+                # Diagnostic for common binary classification link function confusion (GH #4414)
+                try:
+                    if np.allclose(scipy.special.expit(sum_val), model_output, atol=1e-2, rtol=1e-2):
+                        err_msg += (
+                            "\n\nHINT: The SHAP values sum to the model's raw output (margins), "
+                            "but it looks like you are comparing them to probabilities. "
+                            "Apply a logistic transform (scipy.special.expit) to the sum to match."
+                        )
+                except Exception:
+                    pass
                 raise ExplainerError(err_msg)
 
         if isinstance(phi, list):
