@@ -414,7 +414,9 @@ def bar_legacy(shap_values, features=None, feature_names=None, max_display=None,
         feature_names = np.array([labels["FEATURE"] % str(i) for i in range(num_features)])
     elif len(feature_names) < num_features:
         # pad feature_names with default names if too short (GH #3553)
-        feature_names = list(feature_names) + [labels["FEATURE"] % str(i) for i in range(len(feature_names), num_features)]
+        feature_names = list(feature_names) + [
+            labels["FEATURE"] % str(i) for i in range(len(feature_names), num_features)
+        ]
 
     if max_display is None:
         max_display = 7

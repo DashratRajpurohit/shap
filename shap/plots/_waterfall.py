@@ -81,7 +81,9 @@ def waterfall(shap_values, max_display=10, show=True):
     if feature_names is None:
         feature_names = np.array([labels["FEATURE"] % str(i) for i in range(len(values))])
     elif len(feature_names) < len(values):
-        feature_names = list(feature_names) + [labels["FEATURE"] % str(i) for i in range(len(feature_names), len(values))]
+        feature_names = list(feature_names) + [
+            labels["FEATURE"] % str(i) for i in range(len(feature_names), len(values))
+        ]
 
     # init variables we use for tracking the plot locations
     num_features = min(max_display, len(values))
@@ -452,7 +454,9 @@ def waterfall_legacy(expected_value, shap_values=None, features=None, feature_na
     if feature_names is None:
         feature_names = np.array([labels["FEATURE"] % str(i) for i in range(len(shap_values))])
     elif len(feature_names) < len(shap_values):
-        feature_names = list(feature_names) + [labels["FEATURE"] % str(i) for i in range(len(feature_names), len(shap_values))]
+        feature_names = list(feature_names) + [
+            labels["FEATURE"] % str(i) for i in range(len(feature_names), len(shap_values))
+        ]
 
     # init variables we use for tracking the plot locations
     num_features = min(max_display, len(shap_values))
