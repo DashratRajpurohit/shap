@@ -24,7 +24,7 @@ allow_to_fail = [
     Path("tabular_examples/model_agnostic/Multioutput Regression SHAP.ipynb"),
     Path("tabular_examples/neural_networks/Census income classification with Keras.ipynb"),
     Path("tabular_examples/tree_based_models/League of Legends Win Prediction with XGBoost.ipynb"),
-    Path("tabular_examples/tree_based_models/Perfomance Comparison.ipynb"),
+    Path("tabular_examples/tree_based_models/Performance Comparison.ipynb"),
     Path("tabular_examples/tree_based_models/tree_shap_paper/Figure 6 - Supervised Clustering R-squared.ipynb"),
     Path("tabular_examples/tree_based_models/tree_shap_paper/Figure 7 - Airline Tweet Sentiment Analysis.ipynb"),
     Path("tabular_examples/tree_based_models/tree_shap_paper/Figures 8-11 NHANES I Survival Model-Copy1.ipynb"),
