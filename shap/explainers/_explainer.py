@@ -77,8 +77,8 @@ class Explainer(Serializable):
         algorithm : "auto", "permutation", "partition", "tree", or "linear"
             The algorithm used to estimate the Shapley values. There are many different algorithms that
             can be used to estimate the Shapley values (and the related value for constrained games), each
-            of these algorithms have various tradeoffs and are preferable in different situations. By
-            default the "auto" options attempts to make the best choice given the passed model and masker,
+            of these algorithms has various tradeoffs and are preferable in different situations. By
+            default the "auto" option attempts to make the best choice given the passed model and masker,
             but this choice can always be overridden by passing the name of a specific algorithm. The type of
             algorithm used will determine what type of subclass object is returned by this constructor, and
             you can also build those subclasses directly if you prefer or need more fine grained control over
@@ -87,7 +87,7 @@ class Explainer(Serializable):
         output_names : None or list of strings
             The names of the model outputs. For example if the model is an image classifier, then output_names would
             be the names of all the output classes. This parameter is optional. When output_names is None then
-            the Explanation objects produced by this explainer will not have any output_names, which could effect
+            the Explanation objects produced by this explainer will not have any output_names, which could affect
             downstream plots.
 
         seed: None or int

@@ -41,7 +41,7 @@ class LinearExplainer(Explainer):
         mask and returns a matrix of masked samples. These masked samples are
         evaluated using the model function and the outputs are then averaged.
 
-        As a shortcut for the standard masking using by SHAP you can pass a
+        As a shortcut for the standard masking used by SHAP you can pass a
         background data matrix instead of a function and that matrix will be
         used for masking.
 
