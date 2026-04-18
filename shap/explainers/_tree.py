@@ -343,7 +343,7 @@ class TreeExplainer(Explainer):
                     # Use a single all-zero dummy row to obtain the baseline
                     # (last column of pred_contribs). This is identical to what
                     # shap_values() does internally on every call.
-                    n_features = self.model.values.shape[1]
+                    n_features = self.model.original_model.num_features()
                     dummy = xgboost.DMatrix(np.zeros((1, n_features)))
                     n_iterations = _xgboost_n_iterations(-1, self.model.num_stacked_models)
                     phi_init = self.model.original_model.predict(
