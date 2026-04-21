@@ -554,7 +554,7 @@ class TreeExplainer(Explainer):
                or ``model.predict_proba()`` returns. For example, for an XGBoost Classifier with the default
                ``model_output="raw"``, the explainer returns log-odds (margins).
                To compare this mathematically against ``predict_proba()`` probabilities,
-               a logistic inverse-transform (e.g., ``scipy.special.expit``) must be applied 
+               a logistic inverse-transform (e.g., ``scipy.special.expit``) must be applied
                to the sum.
 
                Furthermore, the additivity formula requires SHAP values and model
