@@ -130,7 +130,8 @@ class Text(Masker):
         # flag that we return outputs that will not get changed by later masking calls
         self.immutable_outputs = True
 
-    def __call__(self, mask: bool | npt.NDArray[np.bool_], s: str) -> tuple[npt.NDArray[Any]]:
+    def __call__(self, mask: bool | npt.NDArray[np.bool_], *args: Any) -> tuple[npt.NDArray[Any]]:
+        s = args[0]
         mask = self._standardize_mask(mask, s)
         self._update_s_cache(s)
 
@@ -170,27 +171,20 @@ class Text(Masker):
                 out = out.replace("▁", " ")
 
             # replace sequence of spaces with a single space and strip beginning and end spaces
-            out = re.sub(
+            out_str = re.sub(
                 r"[\s]+", " ", out
             ).strip()  # TODOmaybe: should do strip?? (originally because of fast vs. slow tokenizer differences)
+            return (np.array([out_str]),)
 
         else:
             if self.mask_token_id is None:
-                out = self._tokenized_s[mask]
+                assert self._tokenized_s is not None
+                out_arr = self._tokenized_s[mask]
             else:
-                out = np.array([self._tokenized_s[i] if mask[i] else self.mask_token_id for i in range(len(mask))])
-                # print("mask len", len(out))
-                # # crop the output if needed
-                # if self.max_length is not None and len(out) > self.max_length:
-                #     new_out = np.zeros(self.max_length)
-                #     new_out[:] = out[:self.max_length]
-                #     new_out[-self.keep_suffix:] = out[-self.keep_suffix:]
-                #     out = new_out
+                assert self._tokenized_s is not None
+                out_arr = np.array([self._tokenized_s[i] if mask[i] else self.mask_token_id for i in range(len(mask))])
 
-        # for some sentences with strange configurations around the separator tokens, tokenizer encoding/decoding may contain
-        # extra unnecessary tokens, for example ''. you may want to strip out spaces adjacent to separator tokens. Refer to PR
-        # for more details.
-        return (np.array([out]),)
+        return (np.array([out_arr]),)
 
     def data_transform(self, s: str) -> tuple[Sequence[str]]:
         """Called by explainers to allow us to convert data to better match masking (here this means tokenizing)."""
@@ -327,12 +321,13 @@ class Text(Masker):
     def mask_shapes(self, s: str) -> list[tuple[int]]:
         """The shape of the masks we expect."""
         self._update_s_cache(s)
+        assert self._tokenized_s is not None
         return [(len(self._tokenized_s),)]
 
     def invariants(self, s: str) -> npt.NDArray[np.bool_]:
         """The names of the features for each mask position for the given input string."""
         self._update_s_cache(s)
-
+        assert self._tokenized_s is not None
         invariants = np.zeros(len(self._tokenized_s), dtype=bool)
         if self.keep_prefix > 0:
             invariants[: self.keep_prefix] = True
@@ -347,6 +342,7 @@ class Text(Masker):
     def feature_names(self, s: str) -> list[list[str]]:
         """The names of the features for each mask position for the given input string."""
         self._update_s_cache(s)
+        assert self._segments_s is not None
         return [[v.strip() for v in self._segments_s]]
 
     def save(self, out_file: Any) -> None:
