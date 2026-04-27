@@ -144,6 +144,7 @@ from ..utils._exceptions import ExplainerError
 
 class TreeExplainer:
     """A pure Python (slow) implementation of Tree SHAP."""
+
     trees: Any
 
     def __init__(self, model: Any, **kwargs: Any) -> None:

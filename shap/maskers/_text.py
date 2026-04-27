@@ -5,7 +5,7 @@ import re
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Sequence
 
 import numpy as np
 import numpy.typing as npt
@@ -549,7 +549,7 @@ def partition_tree(decoded_tokens: Sequence[str], special_tokens: Sequence[str])
         lind = token_groups[ind].index
         rind = token_groups[ind + 1].index
         if lind is None or rind is None:
-             raise ValueError("Token index cannot be None during clustering")
+            raise ValueError("Token index cannot be None during clustering")
         clustm[new_index - M, 0] = lind
         clustm[new_index - M, 1] = rind
         clustm[new_index - M, 2] = -scores[ind]
