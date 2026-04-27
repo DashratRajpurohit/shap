@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import math
 import re
-from collections.abc import Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
 
 import numpy as np
 import numpy.typing as npt
@@ -28,8 +30,9 @@ class Text(Masker):
     """
 
     _s: str | None
-    _tokenized_s: npt.NDArray[Any]
-    _segments_s: npt.NDArray[Any]
+    _tokenized_s_full: Any | None
+    _tokenized_s: npt.NDArray[Any] | None
+    _segments_s: npt.NDArray[Any] | None
 
     def __init__(
         self,
@@ -127,7 +130,7 @@ class Text(Masker):
         # flag that we return outputs that will not get changed by later masking calls
         self.immutable_outputs = True
 
-    def __call__(self, mask: npt.NDArray[np.bool_], s: str) -> tuple[npt.NDArray[Any]]:
+    def __call__(self, mask: bool | npt.NDArray[np.bool_], s: str) -> tuple[npt.NDArray[Any]]:
         mask = self._standardize_mask(mask, s)
         self._update_s_cache(s)
 
@@ -545,8 +548,10 @@ def partition_tree(decoded_tokens: Sequence[str], special_tokens: Sequence[str])
 
         lind = token_groups[ind].index
         rind = token_groups[ind + 1].index
-        clustm[new_index - M, 0] = token_groups[ind].index
-        clustm[new_index - M, 1] = token_groups[ind + 1].index
+        if lind is None or rind is None:
+             raise ValueError("Token index cannot be None during clustering")
+        clustm[new_index - M, 0] = lind
+        clustm[new_index - M, 1] = rind
         clustm[new_index - M, 2] = -scores[ind]
         clustm[new_index - M, 3] = (clustm[lind - M, 3] if lind >= M else 1) + (clustm[rind - M, 3] if rind >= M else 1)
 

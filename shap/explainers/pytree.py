@@ -144,6 +144,7 @@ from ..utils._exceptions import ExplainerError
 
 class TreeExplainer:
     """A pure Python (slow) implementation of Tree SHAP."""
+    trees: Any
 
     def __init__(self, model: Any, **kwargs: Any) -> None:
         self.model_type = "internal"
@@ -220,6 +221,8 @@ class TreeExplainer:
                 return phi[:, :, 0]
             else:
                 return [phi[:, :, i] for i in range(n_outputs)]
+
+        raise ValueError("Invalid X shape passed to shap_values")
 
     def shap_interaction_values(self, X: Any, tree_limit: int = -1, **kwargs: Any) -> npt.NDArray[Any]:
         # shortcut using the C++ version of Tree SHAP in XGBoost and LightGBM

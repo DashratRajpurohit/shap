@@ -3,7 +3,7 @@ from __future__ import annotations
 import warnings
 from typing import Any
 
-tf = None
+tf: Any = None
 
 
 def _import_tf() -> None:

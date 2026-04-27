@@ -120,7 +120,7 @@ class Tabular(Masker):
         # this is property that allows callers to check what rows actually changed since last time.
         # self.changed_rows = np.ones(self.data.shape[0], dtype=bool)
 
-    def __call__(self, mask: npt.NDArray[Any], x: npt.NDArray[Any]) -> Any:
+    def __call__(self, mask: bool | npt.NDArray[Any], x: npt.NDArray[Any]) -> Any:
         mask = self._standardize_mask(mask, x)
 
         # make sure we are given a single sample
@@ -132,8 +132,8 @@ class Tabular(Masker):
             variants = ~self.invariants(x)
             curr_delta_inds = np.zeros(len(mask), dtype=int)
             num_masks = (mask >= 0).sum()
-            varying_rows_out = np.zeros((num_masks, self.shape[0]), dtype=bool)
-            masked_inputs_out = np.zeros((num_masks * self.shape[0], self.shape[1]))
+            varying_rows_out = np.zeros((num_masks, int(self.shape[0] or 0)), dtype=bool)
+            masked_inputs_out = np.zeros((int(num_masks * (self.shape[0] or 0)), self.shape[1]))
             self._last_mask[:] = False
             self._masked_data[:] = self.data
             _delta_masking(
