@@ -29,7 +29,7 @@ class Tabular(Masker):
         data: npt.NDArray[Any] | pd.DataFrame | dict[str, Any],
         max_samples: int = 100,
         clustering: str | npt.NDArray[Any] | None = None,
-        partition: npt.NDArray[Any] | None = None
+        partition: npt.NDArray[Any] | None = None,
     ) -> None:
         """This masks out tabular features by integrating over the given background dataset.
 
@@ -320,7 +320,7 @@ class Partition(Tabular):
         self,
         data: npt.NDArray[Any] | pd.DataFrame,
         max_samples: int = 100,
-        clustering: str | npt.NDArray[Any] = "correlation"
+        clustering: str | npt.NDArray[Any] = "correlation",
     ) -> None:
         """Build a Partition masker with the given background data and clustering.
 

@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import math
 import re
-from typing import Any, Callable, Sequence
+from collections.abc import Sequence
+from typing import Any
 
-import numpy.typing as npt
 import numpy as np
+import numpy.typing as npt
 
 from .._serializable import Deserializer, Serializer
 from ..utils import safe_isinstance
@@ -206,7 +207,9 @@ class Text(Masker):
             if hasattr(self.tokenizer, "convert_ids_to_tokens"):
                 tokens = self.tokenizer.convert_ids_to_tokens(token_ids)
             else:
-                tokens = [self.tokenizer.decode([id]) if hasattr(self.tokenizer, "decode") else str(id) for id in token_ids]
+                tokens = [
+                    self.tokenizer.decode([id]) if hasattr(self.tokenizer, "decode") else str(id) for id in token_ids
+                ]
             if hasattr(self.tokenizer, "get_special_tokens_mask"):
                 special_tokens_mask = self.tokenizer.get_special_tokens_mask(token_ids, already_has_special_tokens=True)
                 # avoid masking separator tokens, but still mask beginning of sentence and end of sentence tokens

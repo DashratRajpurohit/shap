@@ -170,7 +170,9 @@ class TreeExplainer:
             self.one_fractions = np.zeros(s, dtype=np.float64)
             self.pweights = np.zeros(s, dtype=np.float64)
 
-    def shap_values(self, X: npt.NDArray[Any] | pd.DataFrame | pd.Series, tree_limit: int = -1, **kwargs: Any) -> npt.NDArray[Any] | list[npt.NDArray[Any]]:
+    def shap_values(
+        self, X: npt.NDArray[Any] | pd.DataFrame | pd.Series, tree_limit: int = -1, **kwargs: Any
+    ) -> npt.NDArray[Any] | list[npt.NDArray[Any]]:
         # shortcut using the C++ version of Tree SHAP in XGBoost and LightGBM
         # these are about 10x faster than the numba jit'd implementation below...
         if self.model_type == "xgboost":
@@ -232,7 +234,15 @@ class TreeExplainer:
         else:
             raise NotImplementedError("Interaction values not yet supported for model type: " + str(type(X)))
 
-    def tree_shap(self, tree: Tree, x: npt.NDArray[Any], x_missing: npt.NDArray[np.bool_], phi: npt.NDArray[Any], condition: int = 0, condition_feature: int = 0) -> None:
+    def tree_shap(
+        self,
+        tree: Tree,
+        x: npt.NDArray[Any],
+        x_missing: npt.NDArray[np.bool_],
+        phi: npt.NDArray[Any],
+        condition: int = 0,
+        condition_feature: int = 0,
+    ) -> None:
         # update the bias term, which is the last index in phi
         # (note the paper has this as phi_0 instead of phi_M)
         if condition == 0:
