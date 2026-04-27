@@ -130,8 +130,7 @@ class Text(Masker):
         # flag that we return outputs that will not get changed by later masking calls
         self.immutable_outputs = True
 
-    def __call__(self, mask: bool | npt.NDArray[np.bool_], *args: Any) -> tuple[npt.NDArray[Any]]:
-        s = args[0]
+    def __call__(self, mask: bool | npt.NDArray[np.bool_], s: str) -> tuple[npt.NDArray[Any]]:  # type: ignore[override]
         mask = self._standardize_mask(mask, s)
         self._update_s_cache(s)
 
@@ -151,6 +150,7 @@ class Text(Masker):
             out_parts = []
             is_previous_appended_token_mask_token = False
             sep_token = getattr_silent(self.tokenizer, "sep_token")
+            assert self._segments_s is not None
             for i, v in enumerate(mask):
                 # mask ignores separator tokens and keeps them unmasked
                 if v or sep_token == self._segments_s[i]:
@@ -246,6 +246,7 @@ class Text(Masker):
         tokens: list[str] = []
         space_end = re.compile(r"^.*\W$")
         letter_start = re.compile(r"^[A-Za-z]")
+        assert self._segments_s is not None
         for i, v in enumerate(self._segments_s):
             if (
                 i > 0
@@ -316,6 +317,7 @@ class Text(Masker):
         Note we only return a single sample, so there is no expectation averaging.
         """
         self._update_s_cache(s)
+        assert self._tokenized_s is not None
         return (1, len(self._tokenized_s))
 
     def mask_shapes(self, s: str) -> list[tuple[int]]:

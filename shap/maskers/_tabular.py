@@ -80,7 +80,7 @@ class Tabular(Masker):
             data = utils.sample(data, max_samples)
 
         self.data = data
-        self.clustering = clustering
+        self.clustering: Any = clustering
         self.partition = partition
         self.max_samples = max_samples
 
@@ -120,8 +120,7 @@ class Tabular(Masker):
         # this is property that allows callers to check what rows actually changed since last time.
         # self.changed_rows = np.ones(self.data.shape[0], dtype=bool)
 
-    def __call__(self, mask: bool | npt.NDArray[Any], *args: Any) -> Any:
-        x = args[0]
+    def __call__(self, mask: bool | npt.NDArray[Any], x: npt.NDArray[Any]) -> Any:  # type: ignore[override]
         mask = self._standardize_mask(mask, x)
 
         # make sure we are given a single sample
