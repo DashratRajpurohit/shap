@@ -356,9 +356,13 @@ class TreeExplainer(Explainer):
                         self.expected_value = [phi_init[0, i, -1] for i in range(phi_init.shape[1])]
                     else:
                         self.expected_value = phi_init[0, -1]
-                except Exception:
+                except Exception as e:
                     # Fallback to the manual calculation if the XGBoost query
                     # fails for any reason (e.g. unusual model configuration).
+                    warnings.warn(
+                        f"Failed to directly query XGBoost for the baseline 'expected_value'. "
+                        f"Falling back to manual weight-based calculation. Error: {str(e)}"
+                    )
                     self.expected_value = self.model.values[:, 0].sum(0)
                     if self.expected_value.size == 1:
                         self.expected_value = self.expected_value[0]
