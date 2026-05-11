@@ -516,7 +516,6 @@ def is_color_map(color):
     return safe_isinstance(color, "matplotlib.colors.Colormap")
 
 
-# TODO: remove unused title argument / use title argument
 # TODO: Add support for hclustering based explanations where we sort the leaf order by magnitude and then show the dendrogram to the left
 def summary_legacy(
     shap_values,
@@ -1147,6 +1146,8 @@ def summary_legacy(
         plt.xlabel(labels["GLOBAL_VALUE"], fontsize=13)
     else:
         plt.xlabel(labels["VALUE"], fontsize=13)
+    if title is not None:
+        plt.title(title)
     plt.tight_layout()
     if show:
         plt.show()
