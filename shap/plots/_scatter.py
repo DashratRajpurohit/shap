@@ -26,7 +26,7 @@ def scatter(
     hist: bool = True,
     axis_color="#333333",
     cmap=colors.red_blue,
-    dot_size=16,
+    dot_size=None,
     x_jitter: float | Literal["auto"] = "auto",
     alpha: float = 1.0,
     title: str | None = None,
@@ -149,7 +149,7 @@ def scatter(
                 for j, name in enumerate(overlay):
                     vals = overlay[name]
                     if isinstance(vals[i][0][0], (float, int)):
-                        plt.plot(vals[i][0], vals[i][1], color="#000000", linestyle=line_styles[j], label=name)
+                        ax.plot(vals[i][0], vals[i][1], color="#000000", linestyle=line_styles[j], label=name)
             if i == 0:
                 ax.set_ylabel(ylabel)
             else:
@@ -157,7 +157,7 @@ def scatter(
                 ax.set_yticks([])
                 ax.spines["left"].set_visible(False)
         if overlay is not None:
-            plt.legend()
+            ax.legend()
         if show:
             plt.show()
         return
@@ -240,6 +240,8 @@ def scatter(
     interaction_index = convert_name(interaction_index, shap_values_arr, feature_names)
     categorical_interaction = False
 
+    rng = np.random.default_rng()
+
     # create a matplotlib figure, if `ax` hasn't been specified.
     if ax is None:
         figsize = (7.5, 5) if interaction_index != ind and interaction_index is not None else (6, 5)
@@ -256,7 +258,7 @@ def scatter(
     oinds = np.arange(
         shap_values_arr.shape[0]
     )  # we randomize the ordering so plotting overlaps are not related to data ordering
-    np.random.shuffle(oinds)
+    rng.shuffle(oinds)
     xv = encode_array_if_needed(features[oinds, ind])
     xd = display_features[oinds, ind]
 
@@ -312,9 +314,12 @@ def scatter(
         if len(xvals) >= 2:
             smallest_diff = np.min(np.diff(xvals))
             jitter_amount = x_jitter * smallest_diff
-            xv += (np.random.random_sample(size=len(xv)) * jitter_amount) - (jitter_amount / 2)
+            xv += (rng.random(size=len(xv)) * jitter_amount) - (jitter_amount / 2)
 
-    # the actual scatter plot, TODO: adapt the dot_size to the number of data points?
+    if dot_size is None:
+        dot_size = np.clip(120 / np.sqrt(len(xv)), 1.0, 20.0)
+
+    # the actual scatter plot
     xv_nan = np.isnan(xv)
     xv_notnan = np.invert(xv_nan)
     if interaction_index is not None:
@@ -353,10 +358,10 @@ def scatter(
             tick_positions = np.array([cname_map[n] for n in cnames])
             tick_positions *= 1 - 1 / len(cnames)
             tick_positions += 0.5 * (chigh - clow) / (chigh - clow + 1)
-            cb = plt.colorbar(p, ticks=tick_positions, ax=ax, aspect=80)
+            cb = ax.figure.colorbar(p, ticks=tick_positions, ax=ax, aspect=80)
             cb.set_ticklabels(cnames)
         else:
-            cb = plt.colorbar(p, ax=ax, aspect=80)
+            cb = ax.figure.colorbar(p, ax=ax, aspect=80)
 
         # Type narrowing for mypy
         assert isinstance(interaction_index, (int, np.integer)), f"Unexpected {type(interaction_index)=}"
@@ -402,8 +407,6 @@ def scatter(
     # the histogram of the data
     if hist:
         _plot_histogram(ax, xv, xv_no_jitter)
-
-    plt.sca(ax)
 
     # make the plot more readable
     ax.set_xlabel(name, color=axis_color, fontsize=13)
@@ -524,7 +527,7 @@ def dependence_legacy(
     color="#1E88E5",
     axis_color="#333333",
     cmap=None,
-    dot_size=16,
+    dot_size=None,
     x_jitter=0,
     alpha=1,
     title=None,
@@ -635,6 +638,8 @@ def dependence_legacy(
         interaction_index = convert_name(interaction_index, shap_values, feature_names)
     categorical_interaction = False
 
+    rng = np.random.default_rng()
+
     # create a matplotlib figure, if `ax` hasn't been specified.
     if not ax:
         figsize = (7.5, 5) if interaction_index != ind and interaction_index is not None else (6, 5)
@@ -691,7 +696,7 @@ def dependence_legacy(
     oinds = np.arange(
         shap_values.shape[0]
     )  # we randomize the ordering so plotting overlaps are not related to data ordering
-    np.random.shuffle(oinds)
+    rng.shuffle(oinds)
 
     xv = encode_array_if_needed(features[oinds, ind])
 
@@ -747,9 +752,12 @@ def dependence_legacy(
         if len(xvals) >= 2:
             smallest_diff = np.min(np.diff(xvals))
             jitter_amount = x_jitter * smallest_diff
-            xv += (np.random.random_sample(size=len(xv)) * jitter_amount) - (jitter_amount / 2)
+            xv += (rng.random(size=len(xv)) * jitter_amount) - (jitter_amount / 2)
 
-    # the actual scatter plot, TODO: adapt the dot_size to the number of data points?
+    if dot_size is None:
+        dot_size = np.clip(120 / np.sqrt(len(xv)), 1.0, 20.0)
+
+    # the actual scatter plot
     xv_nan = np.isnan(xv)
     xv_notnan = np.invert(xv_nan)
     if interaction_index is not None:
@@ -781,10 +789,10 @@ def dependence_legacy(
             if len(tick_positions) == 2:
                 tick_positions[0] -= 0.25
                 tick_positions[1] += 0.25
-            cb = plt.colorbar(p, ticks=tick_positions, ax=ax, aspect=80)
+            cb = ax.figure.colorbar(p, ticks=tick_positions, ax=ax, aspect=80)
             cb.set_ticklabels(cnames)
         else:
-            cb = plt.colorbar(p, ax=ax, aspect=80)
+            cb = ax.figure.colorbar(p, ax=ax, aspect=80)
 
         cb.set_label(feature_names[interaction_index], size=13)
         cb.ax.tick_params(labelsize=11)
