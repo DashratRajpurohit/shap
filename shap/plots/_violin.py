@@ -20,7 +20,6 @@ else:
     ORIENTATION_KWARG = dict(vert=False)  # type: ignore[dict-item]
 
 
-# TODO: remove unused title argument / use title argument
 # TODO: Add support for hclustering based explanations where we sort the leaf order by magnitude and then show the dendrogram to the left
 def violin(
     shap_values,
@@ -383,6 +382,8 @@ def violin(
     plt.gca().tick_params("x", labelsize=11)
     plt.ylim(-1, len(feature_order))
     plt.xlabel(labels["VALUE"], fontsize=13)
+    if title is not None:
+        plt.title(title)
 
     if show:
         plt.show()

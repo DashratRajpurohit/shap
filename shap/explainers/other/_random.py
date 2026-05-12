@@ -77,7 +77,8 @@ class Random(Explainer):
 
         # generate random feature attributions
         # we produce small values so our explanation errors are similar to a constant function
-        row_values: NDArray[np.floating[Any]] = np.random.randn(*((len(fm),) + outputs.shape[1:])) * 0.001
+        rng = np.random.default_rng(self.seed if hasattr(self, "seed") else None)
+        row_values: NDArray[np.floating[Any]] = rng.standard_normal(*((len(fm),) + outputs.shape[1:])) * 0.001
 
         return {
             "values": row_values,
